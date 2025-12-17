@@ -227,8 +227,9 @@
                 this.typingIndicator = document.getElementById('typingIndicator');
                 this.connectionStatus = document.getElementById('connectionStatus');
 
-                // WebSocket URL (adjust if needed)
-                this.wsUrl = 'ws://localhost:8004/ws';
+                // WebSocket URL - dynamically detect based on current host
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                this.wsUrl = `${protocol}//${window.location.host}/ws`;
 
                 // Initialize
                 this.init();
