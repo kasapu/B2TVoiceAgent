@@ -1,0 +1,73 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - check_balance
+  - transfer_money
+  - help
+  - cancel
+  - out_of_scope
+
+entities:
+  - amount
+  - account_type
+  - account_number
+  - date
+  - time
+  - currency
+  - recipient
+
+slots:
+  amount:
+    type: float
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: amount
+
+  account_type:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: account_type
+
+  account_number:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: account_number
+
+  recipient:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: recipient
+
+  currency:
+    type: text
+    initial_value: "USD"
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: currency
+
+responses:
+  utter_greet:
+    - text: "Hello! How can I help you today?"
+
+  utter_goodbye:
+    - text: "Goodbye! Have a great day!"
+
+  utter_help:
+    - text: "I can help you check your balance or transfer money. What would you like to do?"
+
+  utter_default:
+    - text: "I'm sorry, I didn't understand that. Could you rephrase?"
+
+session_config:
+  session_expiration_time: 30
+  carry_over_slots_to_new_session: true

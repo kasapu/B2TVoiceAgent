@@ -1,0 +1,27 @@
+# FastAPI and Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Pydantic for validation
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# TTS - Using lightweight gTTS (Google Text-to-Speech)
+gTTS==2.5.1
+
+# MinIO S3 Storage
+minio==7.2.0
+
+# Audio Processing (lightweight)
+pydub==0.25.1
+
+# File handling
+aiofiles==23.2.1
+
+# HTTP Client
+httpx==0.25.2
+requests==2.31.0
+
+# Environment variables
+python-dotenv==1.0.0

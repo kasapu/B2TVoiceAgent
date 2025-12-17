@@ -1,0 +1,409 @@
+version: '3.8'
+
+# Conversational AI Platform - Development Environment
+# Phase 1: Basic infrastructure for text-based chatbot
+
+services:
+  # ============================================
+  # DATABASES & CACHE
+  # ============================================
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: ocp-postgres
+    environment:
+      POSTGRES_DB: ocplatform
+      POSTGRES_USER: ocpuser
+      POSTGRES_PASSWORD: ocppassword
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ocpuser -d ocplatform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ocp-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ocp-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ocp-network
+
+  # ============================================
+  # ADMINER - Database Management UI
+  # ============================================
+
+  adminer:
+    image: adminer:latest
+    container_name: ocp-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    networks:
+      - ocp-network
+
+  # ============================================
+  # CORE SERVICES (Phase 1)
+  # ============================================
+
+  orchestrator:
+    build:
+      context: ./services/orchestrator
+      dockerfile: Dockerfile
+    container_name: ocp-orchestrator
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ocpuser:ocppassword@postgres:5432/ocplatform
+      REDIS_URL: redis://redis:6379/0
+      NLU_SERVICE_URL: http://nlu-service:8001
+      LOG_LEVEL: INFO
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/orchestrator:/app
+      - ./ml-models:/models
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nlu-service:
+        condition: service_started
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ocp-network
+
+  nlu-service:
+    build:
+      context: ./services/nlu-service
+      dockerfile: Dockerfile
+    container_name: ocp-nlu
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ocpuser:ocppassword@postgres:5432/ocplatform
+      MODEL_PATH: /models/nlu
+      LOG_LEVEL: INFO
+      CACHE_ENABLED: "true"
+      REDIS_URL: redis://redis:6379/1
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/nlu-service:/app
+      - ./ml-models/nlu:/models/nlu
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    networks:
+      - ocp-network
+
+  chat-connector:
+    build:
+      context: ./services/chat-connector
+      dockerfile: Dockerfile
+    container_name: ocp-chat-connector
+    environment:
+      ORCHESTRATOR_URL: http://orchestrator:8000
+      REDIS_URL: redis://redis:6379/2
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+    ports:
+      - "8004:8004"
+    volumes:
+      - ./services/chat-connector:/app
+    depends_on:
+      - orchestrator
+      - redis
+    command: uvicorn main:app --host 0.0.0.0 --port 8004 --reload
+    networks:
+      - ocp-network
+
+  # ============================================
+  # VOICE SERVICES (Phase 2)
+  # ============================================
+
+  minio:
+    image: minio/minio:latest
+    container_name: ocp-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./audio-storage:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - ocp-network
+
+  stt-service:
+    build:
+      context: ./services/stt-service
+      dockerfile: Dockerfile
+    container_name: ocp-stt
+    environment:
+      WHISPER_MODEL: base
+      DEVICE: cpu
+      COMPUTE_TYPE: int8
+      HOST: 0.0.0.0
+      PORT: 8002
+      LOG_LEVEL: INFO
+      SAMPLE_RATE: 16000
+      MODEL_DIR: /models/stt
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./services/stt-service:/app
+      - ./ml-models/stt:/models/stt
+      - ./tmp:/tmp/stt-uploads
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+    networks:
+      - ocp-network
+
+  tts-service:
+    build:
+      context: ./services/tts-service
+      dockerfile: Dockerfile
+    container_name: ocp-tts
+    environment:
+      TTS_MODEL: tts_models/en/ljspeech/tacotron2-DDC
+      DEVICE: cpu
+      HOST: 0.0.0.0
+      PORT: 8003
+      LOG_LEVEL: INFO
+      SAMPLE_RATE: 22050
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_BUCKET: tts-audio
+      MODEL_DIR: /models/tts
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./services/tts-service:/app
+      - ./ml-models/tts:/models/tts
+      - ./tmp:/tmp/tts-output
+    depends_on:
+      - minio
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
+    networks:
+      - ocp-network
+
+  voice-connector:
+    build:
+      context: ./services/voice-connector
+      dockerfile: Dockerfile
+    container_name: ocp-voice-connector
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8005
+      LOG_LEVEL: INFO
+      STT_SERVICE_URL: http://stt-service:8002
+      TTS_SERVICE_URL: http://tts-service:8003
+      ORCHESTRATOR_URL: http://orchestrator:8000
+      WS_HEARTBEAT_INTERVAL: 30
+      WS_TIMEOUT: 300
+      MAX_CONNECTIONS: 1000
+      SAMPLE_RATE: 16000
+      MAX_CONCURRENT_CALLS: 100
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./services/voice-connector:/app
+    depends_on:
+      - orchestrator
+      - stt-service
+      - tts-service
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8005 --reload
+    networks:
+      - ocp-network
+
+  # ============================================
+  # SIP GATEWAY (Phase 3)
+  # ============================================
+
+  freeswitch:
+    build:
+      context: ./services/sip-gateway
+      dockerfile: Dockerfile.freeswitch
+    container_name: ocp-freeswitch
+    environment:
+      FREESWITCH_ESL_PASSWORD: ${FREESWITCH_ESL_PASSWORD:-ClueCon}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+    ports:
+      - "5060:5060/udp"              # SIP
+      - "5060:5060/tcp"              # SIP over TCP
+      - "8021:8021"                  # ESL (Event Socket Layer)
+      - "10000-20000:10000-20000/udp"  # RTP media
+    volumes:
+      - ./services/sip-gateway/freeswitch/conf:/etc/freeswitch
+      - freeswitch_logs:/var/log/freeswitch
+    networks:
+      - ocp-network
+    # Uncomment for production with public IP
+    # network_mode: host
+
+  sip-gateway:
+    build:
+      context: ./services/sip-gateway
+      dockerfile: Dockerfile.bridge
+    container_name: ocp-sip-gateway
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8006
+      LOG_LEVEL: INFO
+      VOICE_CONNECTOR_URL: ws://voice-connector:8005
+      FREESWITCH_HOST: freeswitch
+      FREESWITCH_ESL_PORT: 8021
+      FREESWITCH_ESL_PASSWORD: ${FREESWITCH_ESL_PASSWORD:-ClueCon}
+      SIP_PROVIDER: ${SIP_PROVIDER:-twilio}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
+      MAX_CONCURRENT_CALLS: 50
+    ports:
+      - "8006:8006"
+    volumes:
+      - ./services/sip-gateway/app:/app/app
+    depends_on:
+      - freeswitch
+      - voice-connector
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8006 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - ocp-network
+
+  # ============================================
+  # FRONTEND (Phase 1)
+  # ============================================
+
+  chat-widget:
+    build:
+      context: ./frontend/chat-widget
+      dockerfile: Dockerfile.dev
+    container_name: ocp-chat-widget
+    environment:
+      REACT_APP_WS_URL: ws://localhost:8004
+      REACT_APP_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/chat-widget:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    networks:
+      - ocp-network
+
+  # ============================================
+  # MESSAGE QUEUE (Optional for Phase 1, Required for Phase 4)
+  # ============================================
+
+  # Uncomment for Phase 4 (Analytics)
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:7.5.0
+  #   container_name: ocp-zookeeper
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+  #   networks:
+  #     - ocp-network
+
+  # kafka:
+  #   image: confluentinc/cp-kafka:7.5.0
+  #   container_name: ocp-kafka
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #   networks:
+  #     - ocp-network
+
+  # ============================================
+  # MONITORING (Optional for Phase 1, Required for Phase 5)
+  # ============================================
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: ocp-prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #   networks:
+  #     - ocp-network
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: ocp-grafana
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     GF_SECURITY_ADMIN_PASSWORD: admin
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./infrastructure/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+  #   networks:
+  #     - ocp-network
+
+networks:
+  ocp-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  freeswitch_logs:
+    driver: local
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local

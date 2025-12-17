@@ -1,0 +1,123 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.log
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+coverage/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+pgdata/
+
+# Docker
+docker-compose.override.yml
+
+# ML Models (large files - download separately)
+ml-models/stt/models--Systran--faster-whisper-base/
+ml-models/stt/.locks/
+ml-models/nlu/intent_classifier/
+ml-models/tts/
+ml-models/**/*.bin
+ml-models/**/*.pt
+ml-models/**/*.onnx
+ml-models/**/*.h5
+ml-models/**/*.pkl
+*.pth
+!ml-models/**/README.md
+!ml-models/**/.gitkeep
+
+# Audio files
+*.wav
+*.mp3
+*.ogg
+*.opus
+audio-storage/
+
+# Logs
+logs/
+*.log
+*.out
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes secrets
+secrets/
+*.key
+*.pem
+*.crt
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS
+Thumbs.db

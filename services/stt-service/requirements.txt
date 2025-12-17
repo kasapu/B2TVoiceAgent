@@ -1,0 +1,27 @@
+# FastAPI and Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Pydantic for validation
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Core dependencies first
+numpy==1.24.3
+
+# Whisper STT - Use only faster-whisper (includes everything needed)
+faster-whisper==1.0.3
+
+# Audio Processing
+ffmpeg-python==0.2.0
+
+# File handling
+aiofiles==23.2.1
+
+# HTTP Client
+httpx==0.25.2
+requests==2.31.0
+
+# Environment variables
+python-dotenv==1.0.0

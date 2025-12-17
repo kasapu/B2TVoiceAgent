@@ -1,0 +1,14 @@
+FROM safarov/freeswitch:latest
+
+# Copy configuration files
+COPY freeswitch/conf/autoload_configs/event_socket.conf.xml /etc/freeswitch/autoload_configs/
+
+# Copy entrypoint script
+COPY freeswitch/scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose ports
+EXPOSE 5060/tcp 5060/udp 8021 10000-20000/udp
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
