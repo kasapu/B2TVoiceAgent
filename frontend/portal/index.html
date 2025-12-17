@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2T Voice Agent Platform</title>
+    <link rel="stylesheet" href="/portal/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-microphone-lines"></i>
+                    </div>
+                    <span class="logo-text">B2T Voice</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active" data-page="dashboard">
+                        <a href="#dashboard">
+                            <i class="fas fa-th-large"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="miniapps">
+                        <a href="#miniapps">
+                            <i class="fas fa-cubes"></i>
+                            <span>miniApps</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="nlu">
+                        <a href="#nlu">
+                            <i class="fas fa-brain"></i>
+                            <span>NLU</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="orchestrator">
+                        <a href="#orchestrator">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Orchestrator</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="voice-biometrics">
+                        <a href="#voice-biometrics">
+                            <i class="fas fa-fingerprint"></i>
+                            <span>Voice Biometrics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="agent-assist">
+                        <a href="#agent-assist">
+                            <i class="fas fa-headset"></i>
+                            <span>Agent Assist</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="integrations">
+                        <a href="#integrations">
+                            <i class="fas fa-plug"></i>
+                            <span>Integrations</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="insights">
+                        <a href="#insights">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Insights</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="environments">
+                        <a href="#environments">
+                            <i class="fas fa-server"></i>
+                            <span>Environments Manager</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="access">
+                        <a href="#access">
+                            <i class="fas fa-shield-halved"></i>
+                            <span>Access Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="testing">
+                        <a href="#testing">
+                            <i class="fas fa-flask"></i>
+                            <span>Testing Studio+</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="pathfinder">
+                        <a href="#pathfinder">
+                            <i class="fas fa-route"></i>
+                            <span>Pathfinder</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="nav-divider"></div>
+                
+                <ul class="nav-list nav-bottom">
+                    <li class="nav-item" data-page="terms">
+                        <a href="#terms">
+                            <i class="fas fa-file-contract"></i>
+                            <span>Terms & Conditions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="support">
+                        <a href="#support">
+                            <i class="fas fa-life-ring"></i>
+                            <span>Support Center</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">Admin User</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="main-header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="header-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-area" id="contentArea">
+                <!-- Dashboard Page -->
+                <section class="page active" id="page-dashboard">
+                    <div class="hero-section">
+                        <div class="hero-content">
+                            <h1>Start your Conversational AI Journey!</h1>
+                            <p>We've got everything you need to deploy Conversational AI solutions in an all-in-one UI, on your own. Simply. Easily. Quickly.</p>
+                            <button class="btn-primary" onclick="openChatWidget()">
+                                <i class="fas fa-rocket"></i>
+                                START NOW
+                            </button>
+                        </div>
+                        <div class="hero-illustration">
+                            <div class="illustration-container">
+                                <div class="floating-element cloud-1"><i class="fas fa-cloud"></i></div>
+                                <div class="floating-element cloud-2"><i class="fas fa-cloud"></i></div>
+                                <div class="laptop-graphic">
+                                    <div class="laptop-screen">
+                                        <div class="screen-content">
+                                            <div class="code-line"></div>
+                                            <div class="code-line short"></div>
+                                            <div class="code-line"></div>
+                                            <div class="code-line medium"></div>
+                                        </div>
+                                    </div>
+                                    <div class="laptop-keyboard"></div>
+                                </div>
+                                <div class="floating-element gear"><i class="fas fa-cog"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card" onclick="navigateTo('miniapps')">
+                            <div class="card-icon blue">
+                                <i class="fas fa-cubes"></i>
+                            </div>
+                            <h3>OCP miniApps</h3>
+                            <p>Deploy Natural Language Applications in a matter of minutes!</p>
+                            <a href="#miniapps" class="card-link">Learn more...</a>
+                        </div>
+                        
+                        <div class="feature-card" onclick="navigateTo('orchestrator')">
+                            <div class="card-icon purple">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <h3>Orchestrator</h3>
+                            <p>Drag and drop your way to automation!</p>
+                            <a href="#orchestrator" class="card-link">Learn more...</a>
+                        </div>
+                        
+                        <div class="feature-card" onclick="navigateTo('support')">
+                            <div class="card-icon teal">
+                                <i class="fas fa-life-ring"></i>
+                            </div>
+                            <h3>Support Center</h3>
+                            <p>Visit our Support Center for any questions or required assistance. We got your back 24/7.</p>
+                            <a href="#support" class="card-link">Learn more...</a>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-section">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-comments"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value">1,234</span>
+                                <span class="stat-label">Conversations Today</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value">98.5%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value">1.2s</span>
+                                <span class="stat-label">Avg Response Time</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-value">542</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- miniApps Page -->
+                <section class="page" id="page-miniapps">
+                    <div class="page-header">
+                        <h1><i class="fas fa-cubes"></i> miniApps</h1>
+                        <p>Deploy Natural Language Applications in minutes</p>
+                    </div>
+                    <div class="apps-grid">
+                        <div class="app-card">
+                            <div class="app-icon banking"><i class="fas fa-university"></i></div>
+                            <h3>Banking Assistant</h3>
+                            <p>Handle balance inquiries, transfers, and account management</p>
+                            <span class="app-status active">Active</span>
+                        </div>
+                        <div class="app-card">
+                            <div class="app-icon support"><i class="fas fa-headset"></i></div>
+                            <h3>Customer Support</h3>
+                            <p>Automated support for common customer inquiries</p>
+                            <span class="app-status active">Active</span>
+                        </div>
+                        <div class="app-card">
+                            <div class="app-icon sales"><i class="fas fa-shopping-cart"></i></div>
+                            <h3>Sales Bot</h3>
+                            <p>Product recommendations and order processing</p>
+                            <span class="app-status draft">Draft</span>
+                        </div>
+                        <div class="app-card add-new">
+                            <i class="fas fa-plus"></i>
+                            <span>Create New App</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- NLU Page -->
+                <section class="page" id="page-nlu">
+                    <div class="page-header">
+                        <h1><i class="fas fa-brain"></i> Natural Language Understanding</h1>
+                        <p>Train and manage your NLU models</p>
+                    </div>
+                    <div class="nlu-content">
+                        <div class="nlu-panel">
+                            <h3>Intent Management</h3>
+                            <div class="intent-list">
+                                <div class="intent-item">
+                                    <span class="intent-name">check_balance</span>
+                                    <span class="intent-examples">24 examples</span>
+                                    <span class="intent-accuracy">95%</span>
+                                </div>
+                                <div class="intent-item">
+                                    <span class="intent-name">transfer_money</span>
+                                    <span class="intent-examples">18 examples</span>
+                                    <span class="intent-accuracy">92%</span>
+                                </div>
+                                <div class="intent-item">
+                                    <span class="intent-name">get_help</span>
+                                    <span class="intent-examples">32 examples</span>
+                                    <span class="intent-accuracy">97%</span>
+                                </div>
+                                <div class="intent-item">
+                                    <span class="intent-name">greet</span>
+                                    <span class="intent-examples">15 examples</span>
+                                    <span class="intent-accuracy">99%</span>
+                                </div>
+                            </div>
+                            <button class="btn-secondary"><i class="fas fa-plus"></i> Add Intent</button>
+                        </div>
+                        <div class="nlu-panel">
+                            <h3>Model Training</h3>
+                            <div class="training-status">
+                                <div class="status-indicator trained"></div>
+                                <span>Model Status: <strong>Trained</strong></span>
+                            </div>
+                            <div class="model-stats">
+                                <div class="model-stat">
+                                    <span class="label">Last Trained</span>
+                                    <span class="value">2 hours ago</span>
+                                </div>
+                                <div class="model-stat">
+                                    <span class="label">Accuracy</span>
+                                    <span class="value">94.5%</span>
+                                </div>
+                                <div class="model-stat">
+                                    <span class="label">Total Intents</span>
+                                    <span class="value">12</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary"><i class="fas fa-sync"></i> Retrain Model</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Orchestrator Page -->
+                <section class="page" id="page-orchestrator">
+                    <div class="page-header">
+                        <h1><i class="fas fa-project-diagram"></i> Orchestrator</h1>
+                        <p>Design conversation flows with drag and drop</p>
+                    </div>
+                    <div class="orchestrator-content">
+                        <div class="flow-sidebar">
+                            <h3>Flow Components</h3>
+                            <div class="component-list">
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-play-circle"></i> Start
+                                </div>
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-comment"></i> Message
+                                </div>
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-question-circle"></i> Question
+                                </div>
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-code-branch"></i> Condition
+                                </div>
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-bolt"></i> API Call
+                                </div>
+                                <div class="component-item" draggable="true">
+                                    <i class="fas fa-stop-circle"></i> End
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flow-canvas">
+                            <div class="canvas-placeholder">
+                                <i class="fas fa-arrows-alt"></i>
+                                <p>Drag components here to build your flow</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Voice Biometrics Page -->
+                <section class="page" id="page-voice-biometrics">
+                    <div class="page-header">
+                        <h1><i class="fas fa-fingerprint"></i> Voice Biometrics</h1>
+                        <p>Secure authentication through voice recognition</p>
+                    </div>
+                    <div class="biometrics-content">
+                        <div class="bio-card">
+                            <div class="bio-icon"><i class="fas fa-microphone"></i></div>
+                            <h3>Voice Enrollment</h3>
+                            <p>Enroll new voice prints for authentication</p>
+                            <button class="btn-primary">Start Enrollment</button>
+                        </div>
+                        <div class="bio-card">
+                            <div class="bio-icon"><i class="fas fa-user-check"></i></div>
+                            <h3>Voice Verification</h3>
+                            <p>Verify caller identity using voice biometrics</p>
+                            <button class="btn-secondary">Test Verification</button>
+                        </div>
+                        <div class="bio-card">
+                            <div class="bio-icon"><i class="fas fa-chart-pie"></i></div>
+                            <h3>Analytics</h3>
+                            <p>View verification success rates and statistics</p>
+                            <button class="btn-secondary">View Analytics</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Agent Assist Page -->
+                <section class="page" id="page-agent-assist">
+                    <div class="page-header">
+                        <h1><i class="fas fa-headset"></i> Agent Assist</h1>
+                        <p>AI-powered assistance for live agents</p>
+                    </div>
+                    <div class="agent-assist-content">
+                        <div class="assist-panel main">
+                            <h3>Live Conversation</h3>
+                            <div class="conversation-view">
+                                <div class="message customer">
+                                    <span class="sender">Customer</span>
+                                    <p>I need to check my recent transactions</p>
+                                </div>
+                                <div class="message agent">
+                                    <span class="sender">Agent</span>
+                                    <p>I'd be happy to help you with that. Let me pull up your account.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="assist-panel suggestions">
+                            <h3>AI Suggestions</h3>
+                            <div class="suggestion-list">
+                                <div class="suggestion">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <p>Ask customer for the date range for transactions</p>
+                                </div>
+                                <div class="suggestion">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <p>Offer to send transaction summary via email</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Integrations Page -->
+                <section class="page" id="page-integrations">
+                    <div class="page-header">
+                        <h1><i class="fas fa-plug"></i> Integrations</h1>
+                        <p>Connect with your existing systems</p>
+                    </div>
+                    <div class="integrations-grid">
+                        <div class="integration-card connected">
+                            <div class="int-icon"><i class="fab fa-salesforce"></i></div>
+                            <h3>Salesforce</h3>
+                            <span class="int-status">Connected</span>
+                        </div>
+                        <div class="integration-card connected">
+                            <div class="int-icon"><i class="fas fa-database"></i></div>
+                            <h3>PostgreSQL</h3>
+                            <span class="int-status">Connected</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="int-icon"><i class="fab fa-slack"></i></div>
+                            <h3>Slack</h3>
+                            <span class="int-status">Not Connected</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="int-icon"><i class="fab fa-microsoft"></i></div>
+                            <h3>Microsoft Teams</h3>
+                            <span class="int-status">Not Connected</span>
+                        </div>
+                        <div class="integration-card">
+                            <div class="int-icon"><i class="fas fa-phone"></i></div>
+                            <h3>Twilio</h3>
+                            <span class="int-status">Not Connected</span>
+                        </div>
+                        <div class="integration-card add-new">
+                            <i class="fas fa-plus"></i>
+                            <span>Add Integration</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Insights Page -->
+                <section class="page" id="page-insights">
+                    <div class="page-header">
+                        <h1><i class="fas fa-chart-line"></i> Insights</h1>
+                        <p>Analytics and performance metrics</p>
+                    </div>
+                    <div class="insights-content">
+                        <div class="chart-container">
+                            <h3>Conversation Volume (Last 7 Days)</h3>
+                            <div class="chart-placeholder">
+                                <div class="bar" style="height: 60%"></div>
+                                <div class="bar" style="height: 80%"></div>
+                                <div class="bar" style="height: 45%"></div>
+                                <div class="bar" style="height: 90%"></div>
+                                <div class="bar" style="height: 70%"></div>
+                                <div class="bar" style="height: 85%"></div>
+                                <div class="bar" style="height: 75%"></div>
+                            </div>
+                            <div class="chart-labels">
+                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                            </div>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <h4>Intent Recognition</h4>
+                                <div class="metric-value">94.5%</div>
+                                <div class="metric-trend up"><i class="fas fa-arrow-up"></i> 2.3%</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Containment Rate</h4>
+                                <div class="metric-value">87.2%</div>
+                                <div class="metric-trend up"><i class="fas fa-arrow-up"></i> 1.8%</div>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Avg Handle Time</h4>
+                                <div class="metric-value">2.5 min</div>
+                                <div class="metric-trend down"><i class="fas fa-arrow-down"></i> 0.3 min</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Environments Page -->
+                <section class="page" id="page-environments">
+                    <div class="page-header">
+                        <h1><i class="fas fa-server"></i> Environments Manager</h1>
+                        <p>Manage your deployment environments</p>
+                    </div>
+                    <div class="environments-list">
+                        <div class="env-card production">
+                            <div class="env-header">
+                                <span class="env-badge">Production</span>
+                                <span class="env-status online">Online</span>
+                            </div>
+                            <div class="env-details">
+                                <p><i class="fas fa-globe"></i> api.b2tvoice.com</p>
+                                <p><i class="fas fa-code-branch"></i> v2.1.0</p>
+                                <p><i class="fas fa-clock"></i> Deployed 3 days ago</p>
+                            </div>
+                        </div>
+                        <div class="env-card staging">
+                            <div class="env-header">
+                                <span class="env-badge">Staging</span>
+                                <span class="env-status online">Online</span>
+                            </div>
+                            <div class="env-details">
+                                <p><i class="fas fa-globe"></i> staging.b2tvoice.com</p>
+                                <p><i class="fas fa-code-branch"></i> v2.2.0-beta</p>
+                                <p><i class="fas fa-clock"></i> Deployed 1 hour ago</p>
+                            </div>
+                        </div>
+                        <div class="env-card development">
+                            <div class="env-header">
+                                <span class="env-badge">Development</span>
+                                <span class="env-status online">Online</span>
+                            </div>
+                            <div class="env-details">
+                                <p><i class="fas fa-globe"></i> dev.b2tvoice.com</p>
+                                <p><i class="fas fa-code-branch"></i> v2.3.0-dev</p>
+                                <p><i class="fas fa-clock"></i> Deployed 10 min ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Access Management Page -->
+                <section class="page" id="page-access">
+                    <div class="page-header">
+                        <h1><i class="fas fa-shield-halved"></i> Access Management</h1>
+                        <p>Manage users, roles, and permissions</p>
+                    </div>
+                    <div class="access-content">
+                        <div class="users-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><div class="user-cell"><div class="avatar">JD</div> John Doe</div></td>
+                                        <td>john@example.com</td>
+                                        <td><span class="role admin">Admin</span></td>
+                                        <td><span class="status active">Active</span></td>
+                                        <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="user-cell"><div class="avatar">JS</div> Jane Smith</div></td>
+                                        <td>jane@example.com</td>
+                                        <td><span class="role developer">Developer</span></td>
+                                        <td><span class="status active">Active</span></td>
+                                        <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="user-cell"><div class="avatar">RJ</div> Robert Johnson</div></td>
+                                        <td>robert@example.com</td>
+                                        <td><span class="role viewer">Viewer</span></td>
+                                        <td><span class="status inactive">Inactive</span></td>
+                                        <td><button class="btn-icon"><i class="fas fa-ellipsis-v"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Testing Studio Page -->
+                <section class="page" id="page-testing">
+                    <div class="page-header">
+                        <h1><i class="fas fa-flask"></i> Testing Studio+</h1>
+                        <p>Test and validate your conversational AI</p>
+                    </div>
+                    <div class="testing-content">
+                        <div class="test-chat">
+                            <div class="chat-header-test">
+                                <h3>Test Conversation</h3>
+                                <select class="app-selector">
+                                    <option>Banking Assistant</option>
+                                    <option>Customer Support</option>
+                                </select>
+                            </div>
+                            <div class="chat-messages-test" id="testMessages">
+                                <div class="message bot">Hello! How can I help you today?</div>
+                            </div>
+                            <div class="chat-input-test">
+                                <input type="text" id="testInput" placeholder="Type a message to test...">
+                                <button onclick="sendTestMessage()"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                        <div class="test-results">
+                            <h3>Analysis</h3>
+                            <div class="analysis-panel">
+                                <div class="analysis-item">
+                                    <span class="label">Detected Intent:</span>
+                                    <span class="value" id="detectedIntent">-</span>
+                                </div>
+                                <div class="analysis-item">
+                                    <span class="label">Confidence:</span>
+                                    <span class="value" id="confidence">-</span>
+                                </div>
+                                <div class="analysis-item">
+                                    <span class="label">Entities:</span>
+                                    <span class="value" id="entities">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Pathfinder Page -->
+                <section class="page" id="page-pathfinder">
+                    <div class="page-header">
+                        <h1><i class="fas fa-route"></i> Pathfinder</h1>
+                        <p>Analyze and optimize conversation paths</p>
+                    </div>
+                    <div class="pathfinder-content">
+                        <div class="path-visualization">
+                            <div class="path-node start">Start</div>
+                            <div class="path-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="path-node">Greeting</div>
+                            <div class="path-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="path-node">Intent Detection</div>
+                            <div class="path-branch">
+                                <div class="branch-path">
+                                    <div class="path-arrow"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="path-node">Check Balance</div>
+                                </div>
+                                <div class="branch-path">
+                                    <div class="path-arrow"><i class="fas fa-arrow-right"></i></div>
+                                    <div class="path-node">Transfer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Terms Page -->
+                <section class="page" id="page-terms">
+                    <div class="page-header">
+                        <h1><i class="fas fa-file-contract"></i> Terms & Conditions</h1>
+                        <p>Legal agreements and policies</p>
+                    </div>
+                    <div class="terms-content">
+                        <div class="terms-card">
+                            <h3>Terms of Service</h3>
+                            <p>Last updated: December 2024</p>
+                            <button class="btn-secondary">View Document</button>
+                        </div>
+                        <div class="terms-card">
+                            <h3>Privacy Policy</h3>
+                            <p>Last updated: December 2024</p>
+                            <button class="btn-secondary">View Document</button>
+                        </div>
+                        <div class="terms-card">
+                            <h3>Data Processing Agreement</h3>
+                            <p>Last updated: November 2024</p>
+                            <button class="btn-secondary">View Document</button>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Support Page -->
+                <section class="page" id="page-support">
+                    <div class="page-header">
+                        <h1><i class="fas fa-life-ring"></i> Support Center</h1>
+                        <p>We got your back 24/7</p>
+                    </div>
+                    <div class="support-content">
+                        <div class="support-card">
+                            <div class="support-icon"><i class="fas fa-book"></i></div>
+                            <h3>Documentation</h3>
+                            <p>Comprehensive guides and API references</p>
+                            <a href="#" class="card-link">Browse Docs</a>
+                        </div>
+                        <div class="support-card">
+                            <div class="support-icon"><i class="fas fa-video"></i></div>
+                            <h3>Video Tutorials</h3>
+                            <p>Step-by-step video guides</p>
+                            <a href="#" class="card-link">Watch Now</a>
+                        </div>
+                        <div class="support-card">
+                            <div class="support-icon"><i class="fas fa-comments"></i></div>
+                            <h3>Live Chat</h3>
+                            <p>Chat with our support team</p>
+                            <a href="#" class="card-link" onclick="openChatWidget()">Start Chat</a>
+                        </div>
+                        <div class="support-card">
+                            <div class="support-icon"><i class="fas fa-ticket"></i></div>
+                            <h3>Submit Ticket</h3>
+                            <p>Create a support ticket</p>
+                            <a href="#" class="card-link">Open Ticket</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Chat Widget Modal -->
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-modal-content">
+            <div class="chat-modal-header">
+                <h3><i class="fas fa-robot"></i> B2T Voice Assistant</h3>
+                <button class="close-modal" onclick="closeChatWidget()"><i class="fas fa-times"></i></button>
+            </div>
+            <iframe id="chatFrame" src="/chat"></iframe>
+        </div>
+    </div>
+    
+    <script src="/portal/app.js"></script>
+</body>
+</html>

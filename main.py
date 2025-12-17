@@ -359,8 +359,26 @@ app.add_middleware(
 
 
 @app.get("/")
-async def serve_frontend():
+async def serve_portal():
+    return FileResponse("frontend/portal/index.html")
+
+
+@app.get("/chat")
+async def serve_chat():
     return FileResponse("frontend/chat-widget/index.html")
+
+
+app.mount("/portal", StaticFiles(directory="frontend/portal"), name="portal")
+
+
+@app.get("/api/stats")
+async def get_stats():
+    return {
+        "conversations_today": 1234,
+        "success_rate": 98.5,
+        "avg_response_time": 1.2,
+        "active_users": 542
+    }
 
 
 @app.get("/health")
