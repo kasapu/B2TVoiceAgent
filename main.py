@@ -9,10 +9,11 @@ import asyncio
 import logging
 from pathlib import Path
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Depends
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Depends, Form, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
+from twilio.twiml.voice_response import VoiceResponse, Gather
 from contextlib import asynccontextmanager
 from typing import Dict, Any, Optional
 import uuid
@@ -384,6 +385,102 @@ async def get_stats():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "version": "1.0.0", "environment": settings.ENVIRONMENT}
+
+
+voice_sessions: Dict[str, Dict[str, Any]] = {}
+
+
+@app.post("/voice/incoming")
+async def voice_incoming(
+    CallSid: str = Form(None),
+    From: str = Form(None),
+    To: str = Form(None),
+    db: AsyncSession = Depends(get_db)
+):
+    """Handle incoming Twilio voice call"""
+    twiml = VoiceResponse()
+    
+    voice_sessions[CallSid] = {
+        "call_sid": CallSid,
+        "from": From,
+        "to": To,
+        "turn_count": 0,
+        "context": {}
+    }
+    
+    gather = Gather(
+        input='speech',
+        action='/voice/process',
+        method='POST',
+        timeout=5,
+        speech_timeout='auto',
+        language='en-US'
+    )
+    gather.say("Hello! I'm your B2T voice assistant. How can I help you today?", voice='Polly.Joanna')
+    twiml.append(gather)
+    
+    twiml.say("I didn't catch that. Goodbye!")
+    twiml.hangup()
+    
+    return Response(content=str(twiml), media_type="application/xml")
+
+
+@app.post("/voice/process")
+async def voice_process(
+    CallSid: str = Form(None),
+    SpeechResult: str = Form(None),
+    Confidence: float = Form(None),
+    db: AsyncSession = Depends(get_db)
+):
+    """Process speech input and respond"""
+    twiml = VoiceResponse()
+    
+    user_text = SpeechResult or ""
+    session = voice_sessions.get(CallSid, {"turn_count": 0, "context": {}})
+    session["turn_count"] += 1
+    
+    nlu_result = fallback_intent(user_text)
+    intent = nlu_result["intent"]["name"]
+    
+    if intent == "check_balance":
+        bot_response = "Your current account balance is $1,234.56. Is there anything else I can help you with?"
+    elif intent == "transfer_money":
+        bot_response = "I can help you transfer money. How much would you like to transfer and to which account?"
+    elif intent == "goodbye" or "bye" in user_text.lower() or "end" in user_text.lower():
+        twiml.say("Thank you for calling B2T Voice. Goodbye!", voice='Polly.Joanna')
+        twiml.hangup()
+        voice_sessions.pop(CallSid, None)
+        return Response(content=str(twiml), media_type="application/xml")
+    else:
+        bot_response = "I can help you check your balance or transfer money. What would you like to do?"
+    
+    gather = Gather(
+        input='speech',
+        action='/voice/process',
+        method='POST',
+        timeout=5,
+        speech_timeout='auto',
+        language='en-US'
+    )
+    gather.say(bot_response, voice='Polly.Joanna')
+    twiml.append(gather)
+    
+    twiml.say("I didn't hear anything. Goodbye!")
+    twiml.hangup()
+    
+    voice_sessions[CallSid] = session
+    return Response(content=str(twiml), media_type="application/xml")
+
+
+@app.post("/voice/status")
+async def voice_status(
+    CallSid: str = Form(None),
+    CallStatus: str = Form(None)
+):
+    """Handle call status updates"""
+    if CallStatus in ["completed", "failed", "busy", "no-answer"]:
+        voice_sessions.pop(CallSid, None)
+    return {"status": "ok"}
 
 
 @app.post("/v1/conversations/start", status_code=201)

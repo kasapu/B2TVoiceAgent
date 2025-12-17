@@ -48,3 +48,4 @@ redis
 sqlalchemy
 uvicorn[standard]
 websockets
+twilio
